@@ -27,6 +27,7 @@ let gl;
 let a_Position;
 let a_PointSize;
 let u_FragColor;
+let g_penColor = [1.0, 1.0, 1.0, 1.0];
 let g_points = []; // The array to store the positions of points
 let g_colors = []; // The array to store the colors of a points
 
@@ -40,6 +41,9 @@ function main() {
     setUpWebGL();
     // Set up GLSL shader programs and connect GLSL variables
     connectVariablesToGLSL();
+
+    // Set up actions for the HTML UI elements
+    addActionsForHTMLUI();
 
     // Register function (event handler) to be called on a mouse press
     canvas.onmousedown = click;
@@ -93,6 +97,13 @@ function connectVariablesToGLSL() {
     gl.vertexAttrib1f(a_PointSize, 10.0);
 }
 
+function addActionsForHTMLUI() {
+    // Pen color sliders
+    document.getElementById("penColor-r").addEventListener("mouseup", function() { g_penColor[0] = this.value/100; });
+    document.getElementById("penColor-g").addEventListener("mouseup", function() { g_penColor[1] = this.value/100; });
+    document.getElementById("penColor-b").addEventListener("mouseup", function() { g_penColor[2] = this.value/100; });
+}
+
 // ================================================================
 // Event callback methods
 // ================================================================
@@ -101,17 +112,10 @@ function click(ev) {
     // Extract the event click and convert to WebGL canvas space
     let [x, y] = coordinatesEventToGLSpace(ev);
 
-    // Store the coordinates to g_points array
+    // Store the coordinates to g_points
     g_points.push([x, y]);
-
-    // Store the color to g_colors array
-    if(x >= 0.0 && y >= 0.0) { // First quadrant
-        g_colors.push([1.0, 0.0, 0.0, 1.0]); // Red
-    } else if(x < 0.0 && y < 0.0) { // Third quadrant
-        g_colors.push([0.0, 1.0, 0.0, 1.0]); // Green
-    } else { // Others
-        g_colors.push([1.0, 1.0, 1.0, 1.0]); // White
-    }
+    // Store (a copy of) the current pen color to g_colors
+    g_colors.push(g_penColor.slice());
 
     // Draw every shape that's supposed to be on the canvas.
     renderAllShapes();
