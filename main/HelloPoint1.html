@@ -13,11 +13,17 @@
         <form>
             <strong>Pen Color</strong><br>
             <label for="penColor-r">Red</label>
-            <input type="range" class="slider" min="0" max="100" value="100" id="penColor-r" name="penColor-r">
+            <input  id="penColor-r" name="penColor-r"type="range" class="slider" min="0" max="255" value="255">
             <label for="penColor-g">Green</label>
-            <input type="range" class="slider" min="0" max="100" value="100" id="penColor-g" name="penColor-g">
+            <input id="penColor-g" name="penColor-g" type="range" class="slider" min="0" max="255" value="255">
             <label for="penColor-b">Blue</label>
-            <input type="range" class="slider" min="0" max="100" value="100" id="penColor-b" name="penColor-b">
+            <input id="penColor-b" name="penColor-b" type="range" class="slider" min="0" max="255" value="255">
+
+            <br><br>
+
+            <label for="penSize"><strong>Pen Size</strong></label><br>
+            <input id="penSize" name="penSize" type="range" class="slider" min="1" max="100" value="10">
+
         </form>
             
         <script src="../lib/webgl-utils.js"></script>

@@ -7,10 +7,10 @@
 // Vertex shader program
 var VSHADER_SOURCE = `
     attribute vec4 a_Position;
-    attribute float a_PointSize;
+    uniform float u_Size;
     void main() {
         gl_Position = a_Position;
-        gl_PointSize = a_PointSize;
+        gl_PointSize = u_Size;
     }`;
 
 // Fragment shader program
@@ -25,11 +25,14 @@ var FSHADER_SOURCE = `
 let canvas;
 let gl;
 let a_Position;
-let a_PointSize;
+let u_Size;
 let u_FragColor;
+
 let g_penColor = [1.0, 1.0, 1.0, 1.0];
+let g_penSize = 10.0;
 let g_points = []; // The array to store the positions of points
 let g_colors = []; // The array to store the colors of a points
+let g_sizes = []; // The array to store the sizes of points
 
 // ================================================================
 // Main
@@ -78,30 +81,31 @@ function connectVariablesToGLSL() {
         return;
     }
 
+    // Get storage locations
     a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-    a_PointSize = gl.getAttribLocation(gl.program, 'a_PointSize');
-
-    // Get the storage location of u_FragColor variable
     u_FragColor = gl.getUniformLocation(gl.program, 'u_FragColor');
+    u_Size = gl.getUniformLocation(gl.program, 'u_Size');
 
     // Check that all variables exist
-    if (a_Position < 0 || a_PointSize < 0 || !u_FragColor) {
-        if (a_Position < 0) console.log('Failed to get the storage location of a_Position');
-        if (a_PointSize < 0) console.log('Failed to get the storage location of a_PointSize');
-        if (!u_FragColor) console.log('Failed to get u_FragColor variable');
+    if (a_Position < 0 || !u_Size || !u_FragColor) {
+        if (a_Position < 0) console.log("Failed to get the storage location of a_Position");
+        if (!u_FragColor) console.log("Failed to get u_FragColor variable");
+        if (!u_Size) console.log("Failed to get u_Size variable");
         return;
     }
 
     // Provide default values
     gl.vertexAttrib3f(a_Position, 0.0, 0.0, 0.0);
-    gl.vertexAttrib1f(a_PointSize, 10.0);
 }
 
 function addActionsForHTMLUI() {
     // Pen color sliders
-    document.getElementById("penColor-r").addEventListener("mouseup", function() { g_penColor[0] = this.value/100; });
-    document.getElementById("penColor-g").addEventListener("mouseup", function() { g_penColor[1] = this.value/100; });
-    document.getElementById("penColor-b").addEventListener("mouseup", function() { g_penColor[2] = this.value/100; });
+    document.getElementById("penColor-r").addEventListener("mouseup", function() { g_penColor[0] = this.value/255; });
+    document.getElementById("penColor-g").addEventListener("mouseup", function() { g_penColor[1] = this.value/255; });
+    document.getElementById("penColor-b").addEventListener("mouseup", function() { g_penColor[2] = this.value/255; });
+
+    // Pen size slider
+    document.getElementById("penSize").addEventListener("mouseup", function() { g_penSize = this.value; });
 }
 
 // ================================================================
@@ -116,6 +120,8 @@ function click(ev) {
     g_points.push([x, y]);
     // Store (a copy of) the current pen color to g_colors
     g_colors.push(g_penColor.slice());
+    // Store the size to g_sizes
+    g_sizes.push(g_penSize);
 
     // Draw every shape that's supposed to be on the canvas.
     renderAllShapes();
@@ -150,6 +156,8 @@ function renderAllShapes() {
         gl.vertexAttrib3f(a_Position, xy[0], xy[1], 0.0);
         // Pass the color of a point to u_FragColor variable
         gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
+        // Pass the size of a point to the u_Size variable
+        gl.uniform1f(u_Size, g_sizes[i]);
 
         // Draw a point
         gl.drawArrays(gl.POINTS, 0, 1);
