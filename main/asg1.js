@@ -30,9 +30,10 @@ let u_FragColor;
 
 let g_penColor = [1.0, 1.0, 1.0, 1.0];
 let g_penSize = 10.0;
-let g_points = []; // The array to store the positions of points
-let g_colors = []; // The array to store the colors of a points
-let g_sizes = []; // The array to store the sizes of points
+// let g_points = []; // The array to store the positions of points
+// let g_colors = []; // The array to store the colors of a points
+// let g_sizes = []; // The array to store the sizes of points
+let g_shapesList = [];
 
 // ================================================================
 // Main
@@ -116,12 +117,12 @@ function click(ev) {
     // Extract the event click and convert to WebGL canvas space
     let [x, y] = coordinatesEventToGLSpace(ev);
 
-    // Store the coordinates to g_points
-    g_points.push([x, y]);
-    // Store (a copy of) the current pen color to g_colors
-    g_colors.push(g_penColor.slice());
-    // Store the size to g_sizes
-    g_sizes.push(g_penSize);
+    let point = new Point();
+    point.setPosition(x, y, 0.0);
+    point.setColor(...g_penColor);
+    point.setSize(g_penSize);
+
+    g_shapesList.push(point);
 
     // Draw every shape that's supposed to be on the canvas.
     renderAllShapes();
@@ -147,19 +148,8 @@ function renderAllShapes() {
     // Clear <canvas>
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    var len = g_points.length;
+    var len = g_shapesList.length;
     for(var i = 0; i < len; i++) {
-        var xy = g_points[i];
-        var rgba = g_colors[i];
-
-        // Pass the position of a point to a_Position variable
-        gl.vertexAttrib3f(a_Position, xy[0], xy[1], 0.0);
-        // Pass the color of a point to u_FragColor variable
-        gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
-        // Pass the size of a point to the u_Size variable
-        gl.uniform1f(u_Size, g_sizes[i]);
-
-        // Draw a point
-        gl.drawArrays(gl.POINTS, 0, 1);
+        g_shapesList[i].render();
     }
 }
