@@ -24,6 +24,8 @@ var FSHADER_SOURCE = `
 // Globals
 const POINT = 0;
 const TRIANGLE = 1;
+const CIRCLE = 2;
+const SIZE_DELTA = 1/200.0; // Used to scale shapes like triangles and circles.
 
 let canvas;
 let gl;
@@ -118,6 +120,10 @@ function addActionsForHTMLUI() {
         g_penType = TRIANGLE;
         sendTextTOHTML("penType", "Pen Type (selected: TRIANGLE)");
     });
+    document.getElementById("penCircle").addEventListener("mouseup", function() { 
+        g_penType = CIRCLE;
+        sendTextTOHTML("penType", "Pen Type (selected: CIRCLE)");
+    });
 
     // Clear canvas button
     document.getElementById("clearCanvas").addEventListener("mouseup", function() { 
@@ -153,6 +159,9 @@ function click(ev) {
             break;
         case TRIANGLE:
             shape = new Triangle();
+            break;
+        case CIRCLE:
+            shape = new Circle();
             break;
     }
     

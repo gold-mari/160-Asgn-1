@@ -1,6 +1,6 @@
-const SIZE_DELTA = 1/200.0;
-
 class Triangle {
+
+    // Constructor and setters ====
 
     constructor() {
         this.type = "triangle";
@@ -30,24 +30,25 @@ class Triangle {
         this.size = size;
     }
 
-    // Render method ====
+    // Render methods ====
 
     render() {
-        let [x, y, z] = [this.position.x, this.position.y, this.position.z];
+        let [x, y] = [this.position.x, this.position.y];
         
         // Pass the color of a point to u_FragColor variable
         gl.uniform4f(u_FragColor, this.color.r, this.color.g, this.color.b, this.color.a);
         // Pass the size of a point to the u_Size variable
         gl.uniform1f(u_Size, this.size);
 
-        this.drawTriangle([ 
+        // Size delta defined in asg1.js.
+        Triangle.drawTriangle([ 
             x,                          y,
             x+(this.size*SIZE_DELTA),   y,
             x,                          y+(this.size*SIZE_DELTA)
         ]);
     }
 
-    drawTriangle(vertices) {
+    static drawTriangle(vertices) {
 
         let n = 3;
 
