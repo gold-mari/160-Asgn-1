@@ -51,6 +51,8 @@ function main() {
 
     // Register function (event handler) to be called on a mouse press
     canvas.onmousedown = click;
+    // If the mouse is down, draw.
+    canvas.onmousemove = function(ev) { if(ev.buttons == 1) { click(ev); } };
 
     // Specify the color for clearing <canvas>
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -65,12 +67,15 @@ function main() {
 
 function setUpWebGL() {
     // Retrieve <canvas> element
-    canvas = document.getElementById('webgl');
+    canvas = document.getElementById("webgl");
 
     // Get the rendering context for WebGL
-    gl = getWebGLContext(canvas);
+    gl = canvas.getContext("webgl", {
+        preserveDrawingBuffer: true
+    });
+    
     if (!gl) {
-        console.log('Failed to get the rendering context for WebGL');
+        console.log("Failed to get the rendering context for WebGL");
         return;
     }
 }
@@ -155,6 +160,10 @@ function coordinatesEventToGLSpace(ev) {
 }
 
 function renderAllShapes() {
+
+    // Store the time at the start of this function.
+    let startTime = performance.now();
+
     // Clear <canvas>
     clearCanvas();
 
@@ -162,4 +171,25 @@ function renderAllShapes() {
     for(var i = 0; i < len; i++) {
         g_shapesList[i].render();
     }
+
+    updatePerformanceDebug(len, startTime, performance.now());
+}
+
+// ================================================================
+// Utility methods
+// ================================================================
+
+function updatePerformanceDebug(dots, start, end) {
+    let duration = end-start;
+    sendTextTOHTML("performance",
+                        `# dots: ${dots} | ms: ${Math.floor(duration)} | fps: ${Math.floor(10000/duration)/10}`)
+}
+
+function sendTextTOHTML(htmlID, text) {
+    let htmlElm = document.getElementById(htmlID);
+    if (!htmlElm) {
+        console.log(`Failed to get ${htmlID} from HTML.`);
+        return;
+    }
+    htmlElm.innerHTML = text;
 }
