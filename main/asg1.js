@@ -22,6 +22,9 @@ var FSHADER_SOURCE = `
     }`;
 
 // Globals
+const POINT = 0;
+const TRIANGLE = 1;
+
 let canvas;
 let gl;
 let a_Position;
@@ -30,9 +33,7 @@ let u_FragColor;
 
 let g_penColor = [1.0, 1.0, 1.0, 1.0];
 let g_penSize = 10.0;
-// let g_points = []; // The array to store the positions of points
-// let g_colors = []; // The array to store the colors of a points
-// let g_sizes = []; // The array to store the sizes of points
+let g_penType = POINT;
 let g_shapesList = [];
 
 // ================================================================
@@ -73,7 +74,7 @@ function setUpWebGL() {
     gl = canvas.getContext("webgl", {
         preserveDrawingBuffer: true
     });
-    
+
     if (!gl) {
         console.log("Failed to get the rendering context for WebGL");
         return;
@@ -105,7 +106,20 @@ function connectVariablesToGLSL() {
 }
 
 function addActionsForHTMLUI() {
-    // Pen size slider
+    // Pen type buttons
+    g_penType = POINT;
+    sendTextTOHTML("penType", "Pen Type (selected: POINT)");
+
+    document.getElementById("penPoint").addEventListener("mouseup", function() { 
+        g_penType = POINT;
+        sendTextTOHTML("penType", "Pen Type (selected: POINT)");
+    });
+    document.getElementById("penTriangle").addEventListener("mouseup", function() { 
+        g_penType = TRIANGLE;
+        sendTextTOHTML("penType", "Pen Type (selected: TRIANGLE)");
+    });
+
+    // Clear canvas button
     document.getElementById("clearCanvas").addEventListener("mouseup", function() { 
         g_shapesList = []; 
         renderAllShapes();
@@ -132,15 +146,26 @@ function click(ev) {
     // Extract the event click and convert to WebGL canvas space
     let [x, y] = coordinatesEventToGLSpace(ev);
 
-    let point = new Point();
-    point.setPosition(x, y, 0.0);
-    point.setColor(...g_penColor);
-    point.setSize(g_penSize);
+    let shape = undefined;
+    switch (g_penType) {
+        case POINT:
+            shape = new Point();
+            break;
+        case TRIANGLE:
+            shape = new Triangle();
+            break;
+    }
+    
+    if (shape != undefined) {
+        shape.setPosition(x, y, 0.0);
+        shape.setColor(...g_penColor);
+        shape.setSize(g_penSize);
 
-    g_shapesList.push(point);
+        g_shapesList.push(shape);
 
-    // Draw every shape that's supposed to be on the canvas.
-    renderAllShapes();
+        // Draw every shape that's supposed to be on the canvas.
+        renderAllShapes();
+    }
 }
 
 // ================================================================
@@ -179,10 +204,10 @@ function renderAllShapes() {
 // Utility methods
 // ================================================================
 
-function updatePerformanceDebug(dots, start, end) {
+function updatePerformanceDebug(shapes, start, end) {
     let duration = end-start;
     sendTextTOHTML("performance",
-                        `# dots: ${dots} | ms: ${Math.floor(duration)} | fps: ${Math.floor(10000/duration)/10}`)
+                        `# shapes: ${shapes} | ms: ${Math.floor(duration)} | fps: ${Math.floor(10000/duration)/10}`)
 }
 
 function sendTextTOHTML(htmlID, text) {
