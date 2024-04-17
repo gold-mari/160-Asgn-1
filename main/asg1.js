@@ -35,6 +35,7 @@ let u_FragColor;
 
 let g_penColor = [1.0, 1.0, 1.0, 1.0];
 let g_penSize = 10.0;
+let g_circleSegments = 10;
 let g_penType = POINT;
 let g_shapesList = [];
 
@@ -108,9 +109,16 @@ function connectVariablesToGLSL() {
 }
 
 function addActionsForHTMLUI() {
-    // Pen type buttons
+    // Clear canvas button
+    document.getElementById("clearCanvas").addEventListener("mouseup", function() { 
+        g_shapesList = []; 
+        renderAllShapes();
+    });
+
+    // Initialize dynamic text
     g_penType = POINT;
     sendTextTOHTML("penType", "Pen Type (selected: POINT)");
+    sendTextTOHTML("circleLabel", `Circle Segments (current: ${g_circleSegments})`); 
 
     document.getElementById("penPoint").addEventListener("mouseup", function() { 
         g_penType = POINT;
@@ -124,13 +132,16 @@ function addActionsForHTMLUI() {
         g_penType = CIRCLE;
         sendTextTOHTML("penType", "Pen Type (selected: CIRCLE)");
     });
-
-    // Clear canvas button
-    document.getElementById("clearCanvas").addEventListener("mouseup", function() { 
-        g_shapesList = []; 
-        renderAllShapes();
-    });
     
+    // Circle segment count slider
+    let circleCount = document.getElementById("circleCount")
+    circleCount.addEventListener("mouseup", function() { 
+        g_circleSegments = this.value;
+    });
+    circleCount.addEventListener("mousemove", function() {
+        sendTextTOHTML("circleLabel", `Circle Segments (current: ${this.value})`); 
+    });
+
     // Pen color sliders
     document.getElementById("penColor-r").addEventListener("mouseup", function() { g_penColor[0] = this.value/255; });
     document.getElementById("penColor-g").addEventListener("mouseup", function() { g_penColor[1] = this.value/255; });
@@ -162,6 +173,7 @@ function click(ev) {
             break;
         case CIRCLE:
             shape = new Circle();
+            shape.setSegments(g_circleSegments);
             break;
     }
     
