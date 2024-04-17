@@ -56,7 +56,7 @@ function main() {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
     // Clear <canvas>
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    clearCanvas();
 }
 
 // ================================================================
@@ -100,6 +100,12 @@ function connectVariablesToGLSL() {
 }
 
 function addActionsForHTMLUI() {
+    // Pen size slider
+    document.getElementById("clearCanvas").addEventListener("mouseup", function() { 
+        g_shapesList = []; 
+        renderAllShapes();
+    });
+    
     // Pen color sliders
     document.getElementById("penColor-r").addEventListener("mouseup", function() { g_penColor[0] = this.value/255; });
     document.getElementById("penColor-g").addEventListener("mouseup", function() { g_penColor[1] = this.value/255; });
@@ -107,6 +113,10 @@ function addActionsForHTMLUI() {
 
     // Pen size slider
     document.getElementById("penSize").addEventListener("mouseup", function() { g_penSize = this.value; });
+}
+
+function clearCanvas() {
+    gl.clear(gl.COLOR_BUFFER_BIT);
 }
 
 // ================================================================
@@ -146,7 +156,7 @@ function coordinatesEventToGLSpace(ev) {
 
 function renderAllShapes() {
     // Clear <canvas>
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    clearCanvas();
 
     var len = g_shapesList.length;
     for(var i = 0; i < len; i++) {
