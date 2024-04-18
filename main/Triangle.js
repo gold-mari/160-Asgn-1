@@ -71,5 +71,7 @@ class Triangle {
         gl.enableVertexAttribArray(a_Position);
 
         gl.drawArrays(gl.TRIANGLES, 0, n);
+
+        console.log("triangle drawn");
     }
 }

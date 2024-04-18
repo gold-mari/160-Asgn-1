@@ -63,6 +63,8 @@ function main() {
 
     // Clear <canvas>
     clearCanvas();
+
+    renderBird();
 }
 
 // ================================================================
@@ -113,6 +115,12 @@ function addActionsForHTMLUI() {
     document.getElementById("clearCanvas").addEventListener("mouseup", function() { 
         g_shapesList = []; 
         renderAllShapes();
+    });
+
+    // Clear canvas button
+    document.getElementById("drawBird").addEventListener("mouseup", function() { 
+        g_shapesList = []; 
+        renderBird();
     });
 
     // Initialize dynamic text
@@ -219,6 +227,19 @@ function renderAllShapes() {
     }
 
     updatePerformanceDebug(len, startTime, performance.now());
+}
+
+function renderBird() {
+
+    // Store the time at the start of this function.
+    let startTime = performance.now();
+
+    // Clear <canvas>
+    clearCanvas();
+
+    Bird.render();
+
+    updatePerformanceDebug(birdPoints.length, startTime, performance.now());
 }
 
 // ================================================================
