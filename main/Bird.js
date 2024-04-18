@@ -58,7 +58,7 @@ class Bird {
 
     // Render methods ====
 
-    static render() {
+    static render(doneRendering) {
 
         let delay = 50;
 
@@ -67,6 +67,7 @@ class Bird {
         let timer = setInterval( function() {
             if (i >= birdPoints.length) {
                 clearInterval(timer);
+                doneRendering();
                 return;
             };
 

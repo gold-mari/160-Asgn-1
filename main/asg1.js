@@ -33,6 +33,7 @@ let a_Position;
 let u_Size;
 let u_FragColor;
 
+let g_penLocked = false;
 let g_penColor = [1.0, 1.0, 1.0, 1.0];
 let g_penSize = 10.0;
 let g_circleSegments = 10;
@@ -63,8 +64,6 @@ function main() {
 
     // Clear <canvas>
     clearCanvas();
-
-    renderBird();
 }
 
 // ================================================================
@@ -118,9 +117,11 @@ function addActionsForHTMLUI() {
     });
 
     // Clear canvas button
-    document.getElementById("drawBird").addEventListener("mouseup", function() { 
-        g_shapesList = []; 
-        renderBird();
+    document.getElementById("drawBird").addEventListener("mouseup", function() {
+        if (!g_penLocked) {
+            g_shapesList = []; 
+            renderBird();
+        }
     });
 
     // Initialize dynamic text
@@ -168,6 +169,9 @@ function clearCanvas() {
 // ================================================================
 
 function click(ev) {
+
+    if (g_penLocked) return;
+
     // Extract the event click and convert to WebGL canvas space
     let [x, y] = coordinatesEventToGLSpace(ev);
 
@@ -231,13 +235,17 @@ function renderAllShapes() {
 
 function renderBird() {
 
+    g_penLocked = true;
+
     // Store the time at the start of this function.
     let startTime = performance.now();
 
     // Clear <canvas>
     clearCanvas();
 
-    Bird.render();
+    Bird.render(g_shapesList, function() {
+        g_penLocked = false;
+    });
 
     updatePerformanceDebug(birdPoints.length, startTime, performance.now());
 }
