@@ -5,7 +5,7 @@ class Triangle {
     constructor() {
         this.type = "triangle";
         this.position = {
-            x : 0.0,
+            x: 0.0,
             y: 0.0,
             z: 0.0
         };
@@ -71,7 +71,5 @@ class Triangle {
         gl.enableVertexAttribArray(a_Position);
 
         gl.drawArrays(gl.TRIANGLES, 0, n);
-
-        console.log("triangle drawn");
     }
 }

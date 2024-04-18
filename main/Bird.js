@@ -58,13 +58,14 @@ class Bird {
 
     // Render methods ====
 
-    static render(doneRendering) {
+    static renderFreeTriangles(shapesList, renderStep, doneRendering) {
 
         let delay = 50;
 
         // Works effectively as a delayed for loop.
         let i = 0;
         let timer = setInterval( function() {
+
             if (i >= birdPoints.length) {
                 clearInterval(timer);
                 doneRendering();
@@ -75,16 +76,16 @@ class Bird {
             let position = pair[0];
             let color = pair[1];
 
-            // Pass the color of a point to u_FragColor variable
-            gl.uniform4f(u_FragColor, color[0]/255, color[1]/255, color[2]/255, color[3]/255);
+            let freeTriangle = new FreeTriangle();
 
-            Triangle.drawTriangle([
-                position[0][0],  position[0][1],
-                position[1][0],  position[1][1],
-                position[2][0],  position[2][1]
-            ]);
+            freeTriangle.setPosition(position);
+            freeTriangle.setColor(color[0]/255, color[1]/255, color[2]/255, color[3]/255);
 
+            shapesList.push(freeTriangle);
+            renderStep();
+            
             i++;
+
         }, delay);
     }
 }

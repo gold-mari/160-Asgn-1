@@ -243,7 +243,7 @@ function renderBird() {
     // Clear <canvas>
     clearCanvas();
 
-    Bird.render(g_shapesList, function() {
+    Bird.renderFreeTriangles(g_shapesList, renderAllShapes, function() {
         g_penLocked = false;
     });
 
