@@ -161,15 +161,30 @@ function addActionsForHTMLUI() {
     });
 
     // Pen color sliders and color preview
-    document.getElementById("penColor-r").addEventListener("mousemove", function() {
+    let penColorR = document.getElementById("penColor-r");
+    let penColorG = document.getElementById("penColor-g");
+    let penColorB = document.getElementById("penColor-b");
+    penColorR.addEventListener("mouseup", function() {
         g_penColor[0] = this.value/255;
         colorChanged("penColorPreview");
     });
-    document.getElementById("penColor-g").addEventListener("mousemove", function() { 
+    penColorG.addEventListener("mouseup", function() { 
         g_penColor[1] = this.value/255
         colorChanged("penColorPreview"); 
     });
-    document.getElementById("penColor-b").addEventListener("mousemove", function() {
+    penColorB.addEventListener("mouseup", function() {
+        g_penColor[2] = this.value/255;
+        colorChanged("penColorPreview");
+    });
+    penColorR.addEventListener("mousemove", function() {
+        g_penColor[0] = this.value/255;
+        colorChanged("penColorPreview");
+    });
+    penColorG.addEventListener("mousemove", function() { 
+        g_penColor[1] = this.value/255
+        colorChanged("penColorPreview"); 
+    });
+    penColorB.addEventListener("mousemove", function() {
         g_penColor[2] = this.value/255;
         colorChanged("penColorPreview");
     });
