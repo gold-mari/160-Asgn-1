@@ -1,4 +1,31 @@
- <!DOCTYPE html>
+<!-- 
+    Dylan Mahler
+    dmahler@ucsc.edu
+
+    Notes to Grader:
+    For the "Awesomeness" portion of my assignment, I've made a handful of under-the-hood
+    improvements to make the act of drawing more intuitive.
+
+    I've implemented a lot of 'preview' functionality, which writes to the page:
+        - The currently selected pen type
+        - The currently selected number of circle segments
+        - The current pen color, both as a hex code, and as an actual color on the page
+    All of these previews update live when the user updates the sliders.
+
+    For my many-triangle-drawing, I wrote several classes to support drawing such images.
+        - FreeTriangle.js, a version of the triangle class which allows all 3 points to be
+          written to.
+        - FreeTriangleGroup.js, a static class with functions for drawing free triangles,
+          provided data from an array.
+            - There are two modes of drawing FreeTriangleGroups, either all at once (as
+              circles are drawn), or one-by-one, using interval functions.
+        - Drawings.js, a definitions file containing the array of points used to draw my
+          bird! ^v^
+    The triangles of this drawing are added to the shape buffer, so the resultant image
+    can be drawn on. You can decorate the bird!
+ -->
+
+<!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="utf-8" />
