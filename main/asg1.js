@@ -29,6 +29,7 @@ const SIZE_DELTA = 1/200.0; // Used to scale shapes like triangles and circles.
 
 let canvas;
 let gl;
+let penColorPreviewDiv;
 let a_Position;
 let u_Size;
 let u_FragColor;
@@ -151,10 +152,19 @@ function addActionsForHTMLUI() {
         sendTextTOHTML("circleLabel", `Circle Segments (current: ${this.value})`); 
     });
 
-    // Pen color sliders
-    document.getElementById("penColor-r").addEventListener("mouseup", function() { g_penColor[0] = this.value/255; });
-    document.getElementById("penColor-g").addEventListener("mouseup", function() { g_penColor[1] = this.value/255; });
-    document.getElementById("penColor-b").addEventListener("mouseup", function() { g_penColor[2] = this.value/255; });
+    // Pen color sliders and color preview
+    document.getElementById("penColor-r").addEventListener("mousemove", function() {
+        g_penColor[0] = this.value/255;
+        colorChanged("penColorPreview"); 
+    });
+    document.getElementById("penColor-g").addEventListener("mousemove", function() { 
+        g_penColor[1] = this.value/255
+        colorChanged("penColorPreview"); 
+    });
+    document.getElementById("penColor-b").addEventListener("mousemove", function() {
+        g_penColor[2] = this.value/255;
+        colorChanged("penColorPreview");
+    });
 
     // Pen size slider
     document.getElementById("penSize").addEventListener("mouseup", function() { g_penSize = this.value; });
@@ -258,6 +268,16 @@ function updatePerformanceDebug(shapes, start, end) {
     let duration = end-start;
     sendTextTOHTML("performance",
                         `# shapes: ${shapes} | ms: ${Math.floor(duration)} | fps: ${Math.floor(10000/duration)/10}`)
+}
+
+function colorChanged(htmlID) {
+    console.log("awooga!");
+    let htmlElm = document.getElementById(htmlID);
+    if (!htmlElm) {
+        console.log(`Failed to get ${htmlID} from HTML.`);
+        return;
+    }
+    htmlElm.style.backgroundColor = `rgb(${g_penColor[0]*255}, ${g_penColor[1]*255}, ${g_penColor[2]*255})`;
 }
 
 function sendTextTOHTML(htmlID, text) {
