@@ -149,13 +149,13 @@ function addActionsForHTMLUI() {
         g_circleSegments = this.value;
     });
     circleCount.addEventListener("mousemove", function() {
-        sendTextTOHTML("circleLabel", `Circle Segments (current: ${this.value})`); 
+        sendTextTOHTML("circleLabel", `Circle Segments (current: ${this.value})`);
     });
 
     // Pen color sliders and color preview
     document.getElementById("penColor-r").addEventListener("mousemove", function() {
         g_penColor[0] = this.value/255;
-        colorChanged("penColorPreview"); 
+        colorChanged("penColorPreview");
     });
     document.getElementById("penColor-g").addEventListener("mousemove", function() { 
         g_penColor[1] = this.value/255
@@ -168,6 +168,9 @@ function addActionsForHTMLUI() {
 
     // Pen size slider
     document.getElementById("penSize").addEventListener("mouseup", function() { g_penSize = this.value; });
+
+    // Initialize HTML
+    colorChanged("penColorPreview"); 
 }
 
 function clearCanvas() {
@@ -271,7 +274,10 @@ function updatePerformanceDebug(shapes, start, end) {
 }
 
 function colorChanged(htmlID) {
-    console.log("awooga!");
+    sendTextTOHTML("penColor", `Pen Color (current: #${(g_penColor[0]*255).toString(16).toUpperCase()}` +
+                                                    `${(g_penColor[1]*255).toString(16).toUpperCase()}` +
+                                                    `${(g_penColor[2]*255).toString(16).toUpperCase()})`);
+
     let htmlElm = document.getElementById(htmlID);
     if (!htmlElm) {
         console.log(`Failed to get ${htmlID} from HTML.`);
