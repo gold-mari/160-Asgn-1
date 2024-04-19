@@ -112,16 +112,24 @@ function connectVariablesToGLSL() {
 
 function addActionsForHTMLUI() {
     // Clear canvas button
-    document.getElementById("clearCanvas").addEventListener("mouseup", function() { 
-        g_shapesList = []; 
-        renderAllShapes();
+    document.getElementById("clearCanvas").addEventListener("mouseup", function() {
+        if (!g_penLocked) {
+            g_shapesList = []; 
+            renderAllShapes();
+        }
     });
 
-    // Clear canvas button
+    // Draw bird buttons
     document.getElementById("drawBird").addEventListener("mouseup", function() {
         if (!g_penLocked) {
             g_shapesList = []; 
-            renderBird();
+            renderBird(false);
+        }
+    });
+    document.getElementById("drawBird_Rush").addEventListener("mouseup", function() {
+        if (!g_penLocked) {
+            g_shapesList = []; 
+            renderBird(true);
         }
     });
 
@@ -246,7 +254,7 @@ function renderAllShapes() {
     updatePerformanceDebug(len, startTime, performance.now());
 }
 
-function renderBird() {
+function renderBird(doRush) {
 
     g_penLocked = true;
 
@@ -256,9 +264,8 @@ function renderBird() {
     // Clear <canvas>
     clearCanvas();
 
-    FreeTriangleGroup.renderFreeTriangles(birdPoints, g_shapesList, renderAllShapes, function() {
-        g_penLocked = false;
-    });
+    FreeTriangleGroup.renderFreeTriangles(birdPoints, g_shapesList, renderAllShapes, function() { g_penLocked = false; },
+                                          rush=doRush);
 
     updatePerformanceDebug(birdPoints.length, startTime, performance.now());
 }
